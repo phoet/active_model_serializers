@@ -62,3 +62,17 @@ end
 class CommentSerializer < ActiveModel::Serializer
   attributes :content
 end
+
+class CustomArraySerializer < ActiveModel::ArraySerializer
+  self.root = false
+
+  def as_json(*args)
+    data = super
+    {items: data, item_count: data.count}
+  end
+end
+
+class AppSerializer < ActiveModel::Serializer
+  attributes :title
+  has_many :comments, serializer: CustomArraySerializer
+end

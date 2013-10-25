@@ -129,6 +129,13 @@ module ActiveModel
           comments: [{ content: 'fake' }, { content: 'fake' }]
         }, @post_serializer.as_json)
       end
+
+      def test_associations_using_a_given_array_serializer
+        @post_serializer = AppSerializer.new(@post)
+        assert_equal({
+          "app" => { :title => "Title 1", :comments => [{ :content => "C1" }, { :content=>"C2" }] }
+        }, @post_serializer.as_json)
+      end
     end
   end
 end

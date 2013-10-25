@@ -163,7 +163,11 @@ end
     def serialize(association)
       associated_data = send(association.name)
       if associated_data.respond_to?(:to_ary)
-        associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
+        if association.serializer_class && association.serializer_class <= ArraySerializer
+          association.build_serializer(associated_data).serializable_array
+        else
+          associated_data.map { |elem| association.build_serializer(elem).serializable_hash }
+        end
       else
         result = association.build_serializer(associated_data).serializable_hash
         association.is_a?(Association::HasMany) ? [result] : result
